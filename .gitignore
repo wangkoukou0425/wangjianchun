@@ -1,0 +1,15 @@
+/.idea
+
+/.vscode
+
+/vendor
+
+*.log
+
+thinkphp
+.env
+.DS_Store
+
+config/template.php
+config/database.php
+travis.yml
