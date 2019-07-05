@@ -6,7 +6,7 @@
 		<article class="cl pd-20">
 			<div class="text-c">
 					<input type="text" placeholder="名称" value="" class="input-text" style="width:120px" id="name">
-					<input id="__token__" name="__token__" value="{$Request.token}" />
+					<input id="__token__" name="__token__" value="{$Request.token}" hidden / >
 					<input type="text" placeholder="描述" value="" class="input-text" style="width:120px" id="description">
 				 <button type="button" class="btn btn-success" id="add" name="" onclick="add()"><i class="Hui-iconfont" >&#xe600;</i> 添加1</button>
 			</div>
@@ -99,6 +99,8 @@
 	function modaldemo(id,name,description){
 		$("#up_id").val(id)
 		$("#up_name").val(name)
+		$("#up_description").val(description)
+		$("#up_description").val(description)
 		$("#up_description").val(description)
 		$("#modal-demo").modal("show")
 	}
