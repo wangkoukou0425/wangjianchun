@@ -15,103 +15,97 @@ class User extends Common
      public function show()
     { 
       $rbac= new Rbac();
-      $arr=Db::query("select id,name,description from role");
+      $arr=Db::query("select user.id,user.user_name,user.mobile,role.name from user join user_role on user.id=user_role.user_id join role on user_role.role_id=role.id");
+
       $json=['code'=>0,'status'=>'ok','data'=>$arr];
-      return json($json);
+      echo $json=json_encode($arr);
+      die;
     }
 
-      public function permissionShow(){ 
-      $rbac= new Rbac();
-      $arr=Db::query("select p.id,p.name,p.description,p.path,p_c.name as p_c_name,p.category_id from permission as p join permission_category as p_c on p.category_id=p_c.id");
-      $newarr=[];
-      foreach ($arr as $key => $value) {
-      	  $newarr[$value['p_c_name']][]=$value; 	 
-      }
-      $json=['code'=>0,'status'=>'ok','data'=>$newarr];
-      return json($json);
-    }
+// 
 
-    
-     public function mypermissionShow()
+
+     public function myShow()
     { 
     	$id=Request::get('id');
       $rbac= new Rbac();
-      $arr=Db::query("select permission_id from role_permission where role_id='$id'");
+      $arr=Db::query("select role_id from user_role where user_id='$id'");
       $json=['code'=>0,'status'=>'ok','data'=>$arr];
       return json($json);
     }
 
   public function updateAction(){
       $data=Request::post();
-      $validate = new \app\admin\validate\Role;
+        $rbac= new Rbac();
+      $validate = new \app\admin\validate\User;
         if (!$validate->check($data)) {
           $arr=['code'=>'1','status'=>'error','data'=>$validate->getError()];
             return json($arr);
         }
-      //   unset($data['__token__']);
-        $rbac= new Rbac();
-        // $getname=$rbac->getPermission([['name', '=', $data['name']]]);
-        $name=$data['name'];
+      
+        $user_name=$data['user_name'];
         $id=$data['id'];
-        $permission_id=$data['permission_id'];
-        $up_data=$data;
-        unset($up_data['__token__']);
-        unset($up_data['permission_id']);
-
-
-        $arr=Db::query("select * from role where name='$name'");
-        if (empty($arr)||!empty($arr)&&$arr[0]['id']==$data['id']) {
-          $arr=Db::table('role')->update($up_data);
-          
-            //删掉，重新入库
-          $arr=Db::query("delete from role_permission where role_id='$id'");
-          
-            $pid_arr=explode(',', $permission_id);
-            array_shift($pid_arr);
-            foreach ($pid_arr as $key => $value) {
-              $arr=Db::query("insert into `role_permission` (`role_id`,`permission_id`) values ('$id','$value')"); 
-            }
-            $arr=['code'=>'0','status'=>'ok','data'=>'修改成功'];
-          
+        $mobile=$data['mobile'];       
+        unset($data['__token__']);
+        $arr=Db::query("select * from user where user_name='$user_name' or mobile='$mobile'");
+      if (empty($getarr)) {
+          $user_arr=['user_name'=>$user_name,'mobile'=>$data['mobile']];
+          Db::name('user')->where('id', $data['id'])->update($user_arr);
+          $u_r_arr=['role_id'=>$data['r_name']];
+          Db::name('user_role')->where('user_id',$data['id'])->update($u_r_arr);
+            $arr1 = ['code'=>'0','status'=>'ok','data'=>'修改成功'];
+            $json =json_encode($arr1);
+            echo $json;
+            die;
         }else{
-            $arr=['code'=>'1','status'=>'error','data'=>'重名了'];
-          }
-        return json($arr);
+          foreach ($getarr as $key => $value) {
+                if ($value['id']!=$data['id']) {
+                    $arr = ['code'=>'1','status'=>'error','data'=>'name或phone已存在'];
+                    $json =json_encode($arr);
+                    echo $json;die;
+                }
+            }
+            $user_arr=['user_name'=>$user_name,'password'=>$data['password'],'mobile'=>$data['mobile']];
+          Db::name('user')->where('id', $data['id'])->update($user_arr);
+          $u_r_arr=['role_id'=>$data['role_id']];
+          Db::name('user_role')->where('user_id',$data['id'])->update($u_r_arr);
+            $arr1 = ['code'=>'0','status'=>'ok','data'=>'修改成功'];
+            $json =json_encode($arr1);
+            echo $json;die;
         }
+      }
 
 
-	public function add()
-	 {
-	     return $this->fetch();
-	 }
+  	public function add()
+  	 {
+  	     return $this->fetch();
+  	 }
 
     public function addAction(){
       $data=Request::post();
-      $validate = new \app\admin\validate\Role;
-        $token=Request::post('__token__');
+  
+      $validate = new \app\admin\validate\User;
+      $token=Request::post('__token__');
       if(!$validate->check($data)){
         $arr=['code'=>'1','status'=>'error','data'=>$validate->getError()];
         return json($arr);
       }
+      //验证器
       $rbac= new Rbac();
-      $name=$data['name'];
-      $description=$data['description'];
-      $permission_id=$data['permission_id'];
-      $getname=Db::query("select * from role where name='$name'");
-      $arr=explode(',',$permission_id);
-      array_shift($arr);
-      $permission_id=implode(',',$arr);     
+      $r_name=$data['r_name'];  
+      $user_name=$data['user_name'];
+      $password=md5($data['password']);
+      $mobile=$data['mobile'];
+      $getname=Db::query("select * from user where user_name='$user_name'");
       if(empty($getname)){
-      $rbac->createRole([
-		'name' => $name,
-		'description' => $description,
-		'status' => 1
-		], $permission_id);
-
-       $json=['code'=>'0','status'=>'ok','data'=>$arr];
+      $arr=Db::query("insert into `user` (`user_name`,`password`,`mobile`) values ('$user_name','$password','$mobile')");
+      $getname1=Db::query("select * from user where user_name='$user_name'");
+      $id=$getname1[0]['id'];
+      $arr=Db::query("insert into `user_role` (`user_id`,`role_id`) values ('$id','$r_name')");
+       $json=['code'=>'0','status'=>'ok','data'=>'添加成功'];
       return json($json);
       }else{
-        $json=['code'=>'1','status'=>'error','data'=>'名字或者路径不能重复'];
+        $json=['code'=>'1','status'=>'error','data'=>'名字不能重复'];
       return json($json);
       }
       
@@ -129,34 +123,37 @@ class User extends Common
             echo  $json=json_encode($arr);
             die;
         }
-        $result=Db::table('role')->where('id',$id)->delete();
+        $result=Db::table('user')->where('id',$id)->delete();
         if ($result) {
           echo "ok";
         }
     }
 
-        public function del_More()
-    {
-        $id=Request::post('id');
-        $data=Request::post();
-        $rbac= new Rbac();
-        $validate = new \app\admin\validate1\Role;
-        if (!$validate->check($data)) {
-            $arr=['code'=>'1','status'=>'error','data'=>$validate->getError()];
-            echo  $json=json_encode($arr);
-            die;}
+    //     public function del_More()
+    // {
+    //     $id=Request::post('id');
+    //     $data=Request::post();
+    //     $rbac= new Rbac();
+    //     $validate = new \app\admin\validate1\Role;
+    //     if (!$validate->check($data)) {
+    //         $arr=['code'=>'1','status'=>'error','data'=>$validate->getError()];
+    //         echo  $json=json_encode($arr);
+    //         die;}
         
-        if(empty($id)){
-            $arr=['code'=>'0','status'=>'ok','data'=>'不能为空'];
-            echo $json=json_encode($arr);
-            die;
-    }
-        $arr=explode(',', $id);
-        array_shift($arr);
-        $rbac= new Rbac();
-        $rbac->delRole($arr);
-        $arr=['code'=>'0','status'=>'ok','data'=>'删除成了'];
-        echo $json=json_encode($arr);
+    //     if(empty($id)){
+    //         $arr=['code'=>'0','status'=>'ok','data'=>'不能为空'];
+    //         echo $json=json_encode($arr);
+    //         die;
+    // }
+    //     $arr=explode(',', $id);
+    //     array_shift($arr);
+    //     // $rbac= new Rbac();
+    //     $rbac->delUser($arr);
+    //     $rbac->delUser_role($arr);
+    //     $arr=['code'=>'0','status'=>'ok','data'=>'删除成了'];
+    //     echo $json=json_encode($arr);
        
-    }
-} 
+    // }
+  }
+
+ 

@@ -78,6 +78,7 @@ class Role extends Common
             $arr=['code'=>'1','status'=>'error','data'=>'重名了'];
           }
         return json($arr);
+
         }
 
 
