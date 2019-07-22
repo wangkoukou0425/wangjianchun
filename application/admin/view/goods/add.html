@@ -1,0 +1,167 @@
+{include file="header"}
+<article class="cl pd-20">
+	<form action="" method="post" class="form form-horizontal" id="form-admin-add">
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品名称：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="goods_name" name="goods_name">
+				<input id="__token__" name="__token__" value="{$Request.token}" hidden/ >
+			</div>
+		</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品编码：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="goods_sn" name="goods_sn">
+			</div>
+		</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>库存：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="goods_number" name="goods_number">
+			</div>
+		</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>是否上架：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="is_show" name="is_show">
+			</div>
+		</div>
+		</div>
+
+<!-- 		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品属性添加</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="goods_sold" name="goods_sold">
+			</div>
+		</div>
+		</div> -->
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品价格：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="goods_price" name="goods_price">
+			</div>
+		</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"></label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
+				<select class="select" name="brand_id" id="brand_id">
+					<option value="0">品牌</option>
+				</select>
+				</span> </div>
+		</div>
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"></label>
+			<div class="formControls col-xs-8 col-sm-9"> <span class="select-box" style="width:150px;">
+				<select class="select" name="cat_id" id="cat_id">
+					<option>分类</option>
+				</select>
+				</span> </div>
+		</div>
+	
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<button type="button" class="btn btn-success radius" id="add" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
+			</div>
+		</div>
+	</form>
+</article>
+{include file="footer"}
+<script>
+	function getselect(str,id=0) {
+	$.ajax({
+		url:'{:url("category/show")}',
+		dataType:'json',
+		success:function(res){
+			var arr=res.data 
+			var option=''
+			for (var i = 0; i <arr.length; i++){
+				option=option+"<option value='"+arr[i].id+"'>"+arr[i].name+"</option>"
+				}			
+			$('#r_name').html(option)
+		}
+	})	
+}
+getselect()
+
+
+	$(document).ready(function(){
+	$('#add').click(function(){
+		var goods_name=$('#goods_name').val()
+		var brand_id=$('#brand_id').val()
+		var cat_id=$('#cat_id').val()
+		var goods_sn=$('#goods_sn').val()
+		var goods_number=$('#goods_number').val()
+		var is_show=$('#is_show').val()
+		var goods_price=$('#goods_price').val()
+			$.ajax({
+			url:"{:url('goods/addaction')}",
+			type:'post',
+			data:{
+				goods_name:goods_name,
+				brand_id:brand_id,
+				cat_id:cat_id,
+				goods_sn:goods_sn,
+				goods_number:goods_number,
+				is_show:is_show,
+				goods_price:goods_price,
+			},
+			dataType:'json',
+			success:function(res){
+				console.log(res)
+			if (res.status=='ok') {
+				$("#goods_name").val("")
+				$("#brand_id").val("")
+				$("#cat_id").val("")
+				
+				alert('添加成功')
+			}else{
+				alert(res.data)
+			}
+			}
+
+		})
+	})
+});
+
+	$.ajax({
+	url:"{:url('brand/show')}",
+	success:function(res) {
+		var data=res.data
+		var option=''
+		$.each(data, function( key, value ) {
+			var id=value['brand_id']
+			var name=value['brand_name']
+			option=option+"<option value='"+id+"'>"+name+"</option>";		
+		});	
+	
+		$('#brand_id').html(option)
+		}
+	})
+
+	$.ajax({
+		url:"{:url('goods/showCat')}",
+		// dataType:'json',
+		success:function(res){
+			console.log(res)
+			$('#cat_id').html(res)
+		}
+
+	})
+
+
+
+	
+
+
+</script>
+</body>
+</html>

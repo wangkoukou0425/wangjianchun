@@ -1,0 +1,134 @@
+{include file="header"}
+<section class="Hui-article-box">
+    <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 属性管理 <span class="c-gray en">&gt;</span> 属性分类管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+        
+    <div class="Hui-article">
+        <article class="cl pd-20">
+            <div class="text-c">
+          <!--           <select id="attr_id1"  onchange="change_attr_cate()">
+                        <option></option>
+                    </select> -->
+<!-- 
+                     <select id="attribute" onchange="change_attribute()">
+                        <option>请先选择分类</option>
+                    </select> -->
+
+                    <input id="__token__" name="__token__" value="{$Request.token}" hidden/ >
+                    <input type="text" placeholder="详细属性" value="" class="input-text" style="width:120px" id="name">
+    				<input  type="text" hidden="" name="" value="{$attr_id}" id="attr_id">
+                
+
+                 <button type="button" class="btn btn-success" id="add" name=""><i class="Hui-iconfont" >&#xe600;</i> 添加</button>
+            </div>
+            <div class="text-c">
+                <span id="demo">&nbsp;&nbsp;</span>
+            </div>
+            <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a></span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+            <div class="mt-10">
+                <table class="table table-border table-bordered table-bg table-sort">
+                    <thead>
+                        <tr class="text-c">
+                            <th width="25"><input type="checkbox" name="" value=""></th>
+                            <th width="70">ID</th>
+                            <th width="120">属性名称</th>
+                            <th width="120">属性分类</th>
+                            <th width="100">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content radius">
+            <div class="modal-header">
+                <h3 class="modal-title">对话框标题</h3>
+                <a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+            </div>
+            <div class="modal-body">
+                <input type="text" value="" id="up_id" hidden="">
+                <input type="text" value="" id="up_name">
+                <span id="up_span"></span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="up_action()">确定</button>
+                <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{include file="footer"}
+<script> 
+        function show() {
+        var attr_id=$("#attr_id").val()
+        $.ajax({
+            url:'{:url("attrdetails/show")}',
+            type:'post',
+            data:{
+                attr_id:attr_id
+            },
+            success:function(res){
+                if(res.status=='error'){
+                    alert('没有权限')
+                }else{
+                    console.log(res)
+                    var data=res.data
+                    var tr=''
+                    for (var i = 0; i <data.length; i++){
+                        tr=tr+"<tr><td><input class='mycheckbox' type='checkbox' value='"+data[i]['id']+"'</td><td>"+data[i]['id']+"</td><td>"+data[i]['aname']+"</td><td>"+data[i]['name']+"</td><td class='f-14 product-brand-manage'><a style='text-decoration:none' onclick='modaldemo(\""+data[i]['id']+"\",\""+data[i]['attr_name']+"\",\""+data[i]['name']+"\")' title='编辑'><i class='Hui-iconfont'>&#xe6df;</i></a> <a style='text-decoration:none' class='delete_one ml-5' onclick='del("+data[i]['id']+")' title='删除'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>";            
+                    }
+                    $('.table tbody').html(tr)
+                }
+                
+            }
+        })
+    }
+    show()
+
+         $(document).ready(function(){
+     $("#add").click(function(){
+            var attr_id =$('#attr_id').val()
+            var name =$('#name').val()
+
+            $.ajax({
+                url:"{:url('attrdetails/addaction')}",
+                type:'post',
+                data:{
+                    attr_id:attr_id,
+                    name:name,
+                },  
+                dataType:'json',
+                success:function(res){
+                    console.log(res)
+                    if (res.status=='ok') {
+                        show()
+                    }
+                }
+            })
+        })
+ });
+
+             function del(id){
+    $.ajax({
+    url:"{:url('attrdetails/del')}",
+        data:{
+            id:id,
+        },
+        success:function(res){
+            if(res=='ok'){
+                    alert("删除成功")
+                    show()
+                }
+            }
+        })
+    }
+
+
+</script>
+
+</body>
+</html> 

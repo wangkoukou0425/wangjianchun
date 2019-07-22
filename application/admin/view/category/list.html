@@ -1,0 +1,152 @@
+
+
+{include file="header"}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span> 品牌管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>	
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="text-c">
+				添加:
+				<span id="parent_id" value='0'>一级分类</span>
+				<input type="text" placeholder="分类名称" class="input-text" value=""  style="width:220px" id="cat_name">
+				 <button type="button" class="btn btn-success" id="add" name=""><i class="Hui-iconfont">&#xe600;</i> 添加</button>
+			</div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"></span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+			<style type="text/css">
+				#mytree li ul{
+					display:none;
+				}
+			</style>
+			<div class="mt-10" id="mytree">
+				<ul style='list-style-type:block;'>
+					<li></li>
+				</ul>
+			</div>
+			<span id="span"></span>
+		</article>
+	</div>
+</section>
+{include file="footer"}
+<script>
+	$(document).ready(function(){
+	  $("#add").click(function(){
+	    var cat_name=$("#cat_name").val()
+	     var parent_id=$("#parent_id").attr('value')
+	   	var __token__=$('#__token__').val();
+	    $.ajax({
+	    	url:"{:url('category/addAction')}",
+	    	data:{
+	    	cat_name:cat_name,
+	    	parent_id:parent_id,
+	    	__token__:__token__,
+	    	},
+	    	type:'post',
+	    	success:function(res){
+	    		console.log(res)
+	    		if (res.status=='error') {
+	    			alert(res.data)
+	    		}else{
+	    			show()
+	    		}
+	    	}
+	    })
+	})
+  });
+
+ function show() {
+    	 $.ajax({
+    	 	url:'{:url("category/show")}',
+    	 	success:function(res){
+    	 		$('#mytree').html(res)
+    	 		// $('#ui ul').css('display','none')
+    	 		 }
+		    })
+    	}
+		show()
+	$(document).ready(function(){
+		$(document).on('click','#li1',function(){
+ 			parent_id_html=$(this).html()
+ 			parent_id=$(this).attr('value')
+ 			
+ 			// $('#parent_id').html(parent_id_html)
+ 			$('#parent_id').attr('value',parent_id)
+ 			new_name=parent_id_html.split("<")[0]
+ 			//split截取
+ 			$("#parent_id").html(new_name)
+ 			var bool=$(this).next().css('display')
+ 			if(bool=='none'){
+ 				$(this).next().css('display','block')
+ 			}
+ 			if (bool=='block') {
+ 				$(this).next().css('display','none')
+ 			} 
+ 		 })    	 		
+   
+	})
+	show()
+ 		
+
+
+ function del(cat_id){
+	 var __token__ = $("#__token__").val()
+	 console.log(cat_id)
+	$.ajax({
+	url:"{:url('category/del')}",
+		data:{
+			cat_id:cat_id,
+			 __token__:__token__
+		},
+		dataType:'json',
+		success:function(res){
+			if(res=='ok'){
+			$('#parent_id').attr('value','0')
+	   		$("#parent_id").html('一级分类')
+  			
+  			}
+  			show()
+		}
+	})
+}
+
+ function modaldemo(cat_id,cat_name){
+		$("#up_cat_id").val(brand_id)
+		$("#up_cat_name").val(brand_name)
+		$("#modal-demo").modal("show")
+	}
+
+	function up_action() {
+		var brand_id = $("#up_brand_id").val()
+		var brand_name = $("#up_brand_name").val()
+		var brand_desc = $("#up_brand_desc").val()
+		var site_url = $("#up_site_url").val()
+		var sort_order = $("#up_sort_order").val()
+		var __token__ = $("#__token__").val()
+		$.ajax({
+			url:"{:url('brand/updateAction')}",
+			type:'post',
+  		data:{
+			brand_id:brand_id,
+    		brand_name:brand_name,
+    		brand_desc:brand_desc,
+    		site_url:site_url,
+    		sort_order:sort_order,
+  		},
+  		dataType:'json',
+  		success:function(res) {
+  			console.log(res)
+  			if(res.status=='ok'){
+  			$('#up_span').html()
+  			$("#modal-demo").modal("hide")
+			show()
+  			}
+			if(res.status=='error'){
+			
+			$('#up_span').html(res.data)
+			}
+			getToken()
+	  	}
+	})	
+}
+</script>
+</body>
+</html> 

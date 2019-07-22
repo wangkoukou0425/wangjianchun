@@ -1,0 +1,178 @@
+{include file="header"}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span> 商品管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+				<div class="Hui-article">
+				<article class="cl pd-20">
+				<div class="text-c">
+				<span id="demo">&nbsp;&nbsp;</span>
+				</div>
+            <div class="text-c">
+                    <input id="__token__" name="__token__" value="{$Request.token}" hidden/ >
+            </div>
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <button type="button" class="btn btn-success" id="add" name=""><i class="Hui-iconfont" >&#xe600;</i> 添加</button> </span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+			<div class="mt-10">
+				<input  type="text" hidden="" name="" value="{$goods_id}" id="goods_id">
+			<select  id="attr_cate" class="attr_cate" onchange="changetaa()">
+			     <option>分类</option>
+			</select>
+			<div>
+				<dl class="permission-list" id="dl">	
+				<dt></dt>
+				<dd></dd>			
+				</dl>
+				</div>
+			</div>
+
+
+			    </article>
+			</div>
+<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content radius">
+			<div class="modal-header">
+				<h3 class="modal-title">对话框标题</h3>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body">
+				<input type="text" value="" id="up_goods_id" hidden="">
+				<br>
+				商品名称：<input type="text" value="" id="up_goods_name">
+				<br>
+				品牌名称：
+				<select id="up_brand_id">
+					<option></option>
+				</select>
+				<br>
+				分类：
+				<select id="up_cat_id">
+					<option></option>
+				</select>
+				<br>
+				商品价格：<input type="text" value="" id="up_goods_price">
+				<br>
+				库存：<input type="text" value="" id="up_goods_number">
+				<br>
+				商品编码：<input type="text" value="" id="up_goods_sn">
+				<br>
+				已售出：<input type="text" value="" id="up_goods_sold">
+				<br>
+				是否上架：<input type="text" value="" id="up_is_show">
+				<br>
+				<span id="up_span"></span>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" onclick="up_action()">确定</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footer"}
+<script>		
+selectshow()	
+	function selectshow() {
+		var goods_id=$('#goods_id').val()
+		$.ajax({
+			url:'{:url("goodsattr/selectshow")}',
+			data:{
+				goods_id:goods_id
+			},
+			type:'post',
+			success:function(res){
+				// console.log(res.data)
+				var attr_cate=res.default[0].attr_cate
+				var data=res.data
+				var option="<option value='0'>分类</option>"
+				
+				for (var i = 0; i <res.data.length; i++){
+					if (attr_cate==data[i].id) {
+						option=option+"<option value='"+res.data[i].id+"' selected>"+res.data[i].name+"</option>"
+					}else{
+						option=option+"<option value='"+res.data[i].id+"'>"+res.data[i].name+"</option>"
+					}
+				}
+				$('#attr_cate').html(option)
+				changetaa()
+			}
+		})
+	}
+	
+	function changetaa(){
+		var goods_id=$('#goods_id').val()
+		var attr_cate=$("#attr_cate").val()
+		$.ajax({
+			url:'{:url("goodsattr/show")}',
+			data:{
+				goods_id:goods_id,
+				attr_cate:attr_cate
+			},
+			type:'post',
+			dataType:'json',
+			success:function(res){
+				console.log(res)
+				var data=res.data
+				var dl=''
+				$.each(data, function( key, value ) {
+					dl=dl+"<dt><label class='' style='color:red'><input type='checkbox' value='' name='user-Character-1-0' id='user-Character-1-0'>"+key+"</label></dt><dd><dl class='cl permission-list2'>"
+					$.each(value, function( key1, value1 ) {
+						dl=dl+"<label class=''><input type='checkbox' id='ad"+value1['ad_id']+"' class='mycheckbox' value='"+value1['ad_id']+"'>"+value1['ad_name']+"</label>&nbsp&nbsp&nbsp"
+					})
+					dl=dl+"</dd>";
+				});
+				$('#dl').html(dl)
+				var mydefault=res.default;
+			
+				if (mydefault!=null) {
+					for (var i = 0; i < mydefault.length; i++) {
+					id=mydefault[i].attr_details_id
+	
+					$('#ad'+id).prop('checked',true)
+				}
+				}
+				
+			}
+		})
+	}
+	$(document).ready(function(){
+		$('#add').click(function(){
+			var goods_id=$('#goods_id').val()
+			var attr_cate=$("#attr_cate").val()		
+			var ad_id=$('.mycheckbox:checked')
+			var arr =[]; 
+			var cc='';
+			for (var i = 0; i < ad_id.length; i++) {
+				arr.push(ad_id[i].value);
+				cc=arr.join(',');
+			}
+			$.ajax({
+				url:"{:url('goodsattr/add')}",
+				data:{
+					goods_id:goods_id,
+					attr_cate:attr_cate,
+					id:cc
+				},
+				type:'post',
+				dataType:'json',
+				success:function(res){
+					// console.log(res)
+					if (res.status=='ok') {
+						changetaa()
+						alert('添加成功')
+					}else{
+						alert(res.data)
+					}
+				}
+			})
+		})
+
+
+});
+
+
+
+
+</script>
+
+</body>
+</html> 

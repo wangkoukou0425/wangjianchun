@@ -1,0 +1,90 @@
+{include file="header"}
+<article class="cl pd-20">
+	<form action="" method="post" class="form form-horizontal" id="form-admin-add">
+		<input  type="text" hidden="" name="" value="{$goods_id}" id="goods_id">
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>库存：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="goods_number" name="goods_number">
+
+			</div>
+		</div>
+		</div>
+
+		<div class="row cl">
+			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品价格：</label>
+			<div class="formControls col-xs-8 col-sm-9">
+				<input type="text" class="input-text" value="" placeholder="" id="goods_price" name="goods_price">
+			</div>
+		</div>
+		</div>
+		<br>
+
+
+		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品属性：</label>
+		<dl class="permission-list" id="aa">
+		
+		<?php 
+		foreach ($arr as $key => $v) {
+			echo $v['name'].':';
+			foreach($v['son'] as $k => $val){
+				echo '<input type="radio" name="'.$v['name'].'" value="'.$val['id'].'">'.$val['name'];
+			}
+			echo '<br>';
+		} ?>	
+		</dl>
+
+		<div class="row cl">
+			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+				<button type="button" class="btn btn-success radius" id="add" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
+			</div>
+		</div>
+	</form>
+</article>
+{include file="footer"}
+<script>
+
+// 	function on(){
+// 	var goods_id=$('#goods_id').val()
+// 	$.ajax({
+// 		url:'{:url("goodslist/show2")}',
+// 		type:'post',
+// 		data:{
+// 			goods_id:goods_id
+// 		},
+
+// 		success:function(res){
+// 			console.log(typeof(res))
+// 			console.log(res)
+// 			// var obj = eval(res)
+// 			var obj = JSON.parse(res);
+// 			console.log(typeof(obj))
+// 			return
+// 			var dl='';
+// 			$.each(res, function( key, value ) {
+// 				// console.log(key)
+// 			})
+// 			// $.each(data, function( key, value ) {
+// 			// 	dl=dl+"<dt><label class='' style='color:red'><input type='checkbox' value='' name='user-Character-1-0' id='user-Character-1-0'>"+key+"</label></dt><dd><dl class='cl permission-list2'>"
+// 			// 	$.each(value, function( key1, value1 ) {
+// 			// 		dl=dl+"<label class=''><input type='radio' name='myradio"+value1[0]['attr_id']+"' class='myradio' value='"+value1[0]['id']+"'>"+value1[0]['name']+"</label>&nbsp&nbsp&nbsp"
+// 			// 		})
+// 			// 			dl=dl+"</dd>";
+// 			// 	});
+// 			// 		// console.log(dl)
+// 			// 		$('#aa').html(dl)
+// 			}
+// })
+			
+// }
+
+// $(function(){
+// 	on();
+// })
+
+
+
+</script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 <?php
 namespace app\admin\controller;
-use gmars\rbac\Rbac;
 use Request;
 use Db;
+use gmars\rbac\Rbac;
 
 class Permission extends Common
 {

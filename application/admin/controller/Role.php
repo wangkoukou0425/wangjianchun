@@ -105,10 +105,10 @@ class Role extends Common
       $permission_id=implode(',',$arr);     
       if(empty($getname)){
       $rbac->createRole([
-		'name' => $name,
-		'description' => $description,
-		'status' => 1
-		], $permission_id);
+      'name' => $name,
+      'description' => $description,
+      'status' => 1
+      ], $permission_id);
 
        $json=['code'=>'0','status'=>'ok','data'=>$arr];
       return json($json);

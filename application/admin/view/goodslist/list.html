@@ -1,0 +1,37 @@
+{include file="header"}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 单品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+		<input type="" hidden="" id="__token__" name="__token__" value="{$Request.token}" />
+		<input  type="text" hidden="" name="" value="{$goods_id}" id="goods_id">
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="cl pd-5 bg-1 bk-gray"> <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a class="btn btn-primary radius" href="{:url('goodslist/add')}?id={$goods_id}"><i class="Hui-iconfont">&#xe600;</i> 添加物品(单品)</a> </span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+			<div class="mt-10">
+				<table class="table table-border table-bordered table-bg table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="25"><input type="checkbox" name="" value=""></th>
+							<th width="70">ID</th>
+							<th width="120">单品详情</th>
+							<th width="120">单价</th>
+							<th width="120">库存</th>
+							<th width="70">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					
+
+
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</div>
+</section>
+{include file="footer"}
+<script>			
+
+</script>
+
+</body>
+</html> 

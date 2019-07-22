@@ -1,0 +1,316 @@
+{include file="header"}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 产品管理 <span class="c-gray en">&gt;</span> 品牌管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+		
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="text-c">
+			<!-- 	<a href="{:url('brand/addAction')}">添加</a> -->
+				<!-- <form class="Huiform" method="post" action="" target="_self"> -->
+					<!-- <input type="text" placeholder="名777称" value="" class="input-text" style="width:120px" id="brand_id"> -->
+					<input type="text" placeholder="商品名称" value="" class="input-text" style="width:120px" id="brand_name">
+				
+					<input type="text" placeholder="品牌描述" value="" class="input-text" style="width:120px" id="brand_desc">
+					<input type="text" placeholder="品牌网址" value="" class="input-text" style="width:120px" id="site_url">
+					<input type="text" placeholder="排序" value="" class="input-text" style="width:120px" id="sort_order">
+					<input type="file" name="myfile" placeholder="名称" value="" class="input-text" style="width:200px" id="brand_logo">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				 <button type="button" class="btn btn-success" id="add" name=""><i class="Hui-iconfont">&#xe600;</i> 添加</button>
+				<!-- </form> -->
+			</div>
+			<span id="demo">&nbsp;&nbsp;</span>
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"><a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a></span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+			<div class="mt-10">
+				<table class="table table-border table-bordered table-bg table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="25"><input type="checkbox" name="" value=""></th>
+							<th width="70">ID</th>
+							
+							<th width="120">品牌名称</th>
+						 	<th width="100">LOGO</th>
+							<th width="120">品牌描述</th>
+							<th width="120">品牌网址</th>
+							<th width="120">排序</th>
+							<th width="100">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</div>
+	<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content radius">
+			<div class="modal-header">
+				<h3 class="modal-title">对话框标题</h3>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body">
+				<input type="" value="" id="up_brand_id" hidden="">
+				<input type="" value="" id="up_brand_name">
+				<input type="" value="" id="up_brand_desc">
+				<input type="" value="" id="up_site_url">
+				<input type="" value="" id="up_sort_order">
+				<span id="up_span"></span>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" onclick="up_action()">确定</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="modal-demo1" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">	
+	<div class="modal-dialog">
+		<div class="modal-content radius">
+			<div class="modal-header">
+				<h3 class="modal-title">对话框标题</h3>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body">
+				<input type="" value="" id="up_brand_id1" hidden="">
+				<input type="file" name="up_myfile" placeholder="名称" value="" class="input-text" style="width:200px" id="up_brand_logo">
+				<span id="up_span1"></span>
+			</div>
+			<div class="modal-footer">
+				// <button class="btn btn-primary" onclick="up_logo()">确定</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+</section>
+{include file="footer"}
+<script>
+	$(document).ready(function(){
+	  $("#add").click(function(){
+	    var brand_name=$("#brand_name").val()
+	    // console.log(brand_name)
+	    var brand_desc=$("#brand_desc").val()
+	    var site_url=$("#site_url").val()
+	    var sort_order=$("#sort_order").val()
+	    //方法取值
+	    var formData = new FormData();
+		//实例化了一个空的FromData对象，可以认为是一个From，但里面是空的
+		formData.append('brand_logo', $('#brand_logo')[0].files[0]);
+		formData.append('brand_name',brand_name);
+		formData.append('brand_desc',brand_desc);
+		formData.append('site_url',site_url);
+		formData.append('sort_order',sort_order);
+		//给实列化的FromData对象添加一个控件
+	    $.ajax({
+	    	url:"{:url('brand/addAction')}",
+	    	data:formData,
+	    	type:'post',
+	    	// dataType:'json',
+			contentType: false, 
+			// 注意这里应设为false2                
+			processData: false,
+			cache: false,
+			success:function(res){
+				console.log(res)
+			if (res.status=='ok') {
+				$("#brand_logo").val("")
+				$("#brand_name").val("")
+				$("#brand_desc").val("")
+				$("#site_url").val("")
+				$("#sort_order").val("")
+				
+				alert('添加成功')
+				show()
+			}else{
+				alert(res.data)
+			}
+			}				
+		})
+
+	})
+	  show()
+})
+
+
+ function show() {
+    	 $.ajax({
+    	 	url:'{:url("brand/show")}',
+    	 	success:function(res){
+    	 		// console.log(res)
+                if (res.status=='error') {
+                      alert(res.data)
+                }else{
+    	 		var data=res.data
+    	 		var tr=''
+    	 		for (var i = 0; i < data.length; i++) {
+    	 			   tr=tr+"<tr><td><input type='checkbox'class='mycheckbox' value='"+data[i]['brand_id']+"'></td><td>"+data[i]['brand_id']+"</td><td>"+data[i]['brand_name']+"</td><td><img onclick='img("+data[i]['brand_id']+")' src='/uploads/"+data[i]['brand_logo']+"' style='width:50px; height:50px;'></td><td>"+data[i]['brand_desc']+"</td><td>"+data[i]['site_url']+"</td><td>"+data[i]['sort_order']+"</td><td class='f-14 product-brand-manage'><a onClick='modaldemo(\""+data[i]['brand_id']+"\",\""+data[i]['brand_name']+"\",\""+data[i]['brand_desc']+"\",\""+data[i]['site_url']+"\",\""+data[i]['sort_order']+"\")' style='text-decoration:none' title='编辑' id='update'><i class='Hui-iconfont'>&#xe6df;</i></a> <a style='text-decoration:none' class='delete_one ml-5' onclick='del("+data[i]['brand_id']+")' title='删除'><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>";
+    	 		}
+    	 		$('.table tbody').html(tr)
+        	   }
+    	       }
+
+
+    	    })
+    	 }
+    	  show()
+
+ function del(brand_id){
+	 var __token__ = $("#__token__").val()
+
+	$.ajax({
+	url:"{:url('brand/del')}",
+		data:{
+			brand_id:brand_id,
+			// __token__:__token__
+		},
+		success:function(res){
+			if(res=='ok'){
+	  				alert("删除成功")
+	  				show()
+	  			}
+	  			 getToken()
+			}
+		})
+	}
+
+function datadel(){
+	var r=confirm("按下按钮");
+if (r==true)
+{
+  	var box=$(".mycheckbox:checked")
+  	 var __token__ = $("#__token__").val()
+	var id=''
+	for (var i = 0; i < box.length; i++) {
+		id=id+','+box[i].value
+	}
+	$.ajax({
+	url:"{:url('brand/del_More')}",
+	type:'post',
+	data:{
+	 		id:id,
+	 		 __token__:__token__	
+	 	},
+	 	dataType:'json',
+	 	success:function(res){
+	 	if(res.status=='ok'){
+	 		show()
+	 		 getToken()	
+	   	}
+
+	 	}
+	})
+}
+}
+ function modaldemo(brand_id,brand_name,brand_desc,site_url,sort_order){
+		$("#up_brand_id").val(brand_id)
+		$("#up_brand_name").val(brand_name)
+		$("#up_brand_desc").val(brand_desc)
+		$("#up_site_url").val(site_url)
+		$("#up_sort_order").val(sort_order)
+		$("#modal-demo").modal("show")
+	}
+	function up_action() {
+		var brand_id = $("#up_brand_id").val()
+		var brand_name = $("#up_brand_name").val()
+		var brand_desc = $("#up_brand_desc").val()
+		var site_url = $("#up_site_url").val()
+		var sort_order = $("#up_sort_order").val()
+		var __token__ = $("#__token__").val()
+
+		$.ajax({
+			url:"{:url('brand/updateAction')}",
+			type:'post',
+  		data:{
+			brand_id:brand_id,
+    		brand_name:brand_name,
+    		brand_desc:brand_desc,
+    		site_url:site_url,
+    		sort_order:sort_order,
+  		},
+  		dataType:'json',
+  		success:function(res) {
+  			console.log(res)
+  			if(res.status=='ok'){
+  			$('#up_span').html()
+  			$("#modal-demo").modal("hide")
+			show()
+  			}
+			if(res.status=='error'){
+			
+			$('#up_span').html(res.data)
+			}
+			getToken()
+	  	}
+	})	
+}
+	function getToken() {
+			$.ajax({
+			url:"{:url('common/commonToken')}",
+			dataType:'json',
+			success:function(res){
+				$('#__token__').val(res.token);
+			}
+		})
+	}
+	//   $("#add").click(function(){
+	//     var sort_order=$("#sort_order").val()
+	//     //方法取值
+	//     var formData = new FormData();
+	// 	//实例化了一个空的FromData对象，可以认为是一个From，但里面是空的
+	// 	formData.append('brand_logo', $('#brand_logo')[0].files[0]);
+	// 	//给实列化的FromData对象添加一个控件
+	//     $.ajax({
+	//     	url:"{:url('brand/addAction')}",
+	//     	data:formData,
+	//     	type:'post',
+	//     	// dataType:'json',
+	// 		contentType: false, 
+	// 		// 注意这里应设为false2                
+	// 		processData: false,
+	// 		cache: false,
+	//     	success:function(res){
+	//     		console.log(res)
+	//     		if (res.status=='error') {
+	//     			alert(res.data)
+	//     		}else{
+	//     			show()
+	//     		 }
+	//     	}
+	//     })
+	// });
+ function img(brand_id){
+		$("#up_brand_id1").val(brand_id)
+		$("#modal-demo1").modal("show")
+	}
+
+	  function up_logo() {
+	    var brand_id=$("#up_brand_id1").val()
+	    //方法取值
+	    var formData = new FormData();
+		//实例化了一个空的FromData对象，可以认为是一个From，但里面是空的
+		formData.append('brand_logo', $('#up_brand_logo')[0].files[0]);
+		formData.append('brand_id',brand_id);
+		//给实列化的FromData对象添加一个控件
+	    $.ajax({
+	    	url:"{:url('brand/up_logo')}",
+	    	data:formData,
+	    	type:'post',
+	    	// dataType:'json',
+			contentType: false, 
+			// 注意这里应设为false2                
+			processData: false,
+			cache: false,
+	    	success:function(res){
+	    		console.log(res)
+	    		if (res.status=='error') {
+	    			alert(res.data)
+	    		}else{
+	    			show()
+	    		}
+	    	}
+	    })
+	}
+  
+ 
+</script>
+</body>
+</html> 

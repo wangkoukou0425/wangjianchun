@@ -1,0 +1,210 @@
+{include file="header"}
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 单品列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>	
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l"> <a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> <a href="{:url('goods/add')}"  class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> 添加商品</a> </span> <span class="r">共有数据：<strong>54</strong> 条</span> </div>
+			<div class="mt-10">
+				<table class="table table-border table-bordered table-bg table-sort">
+					<thead>
+						<tr class="text-c">
+							<th width="10"><input type="checkbox" name="" value=""></th>
+							<th width="15">编号</th>
+							<th width="30">商品名</th>
+							<th width="30">品牌</th>
+							<th width="28">分类</th>
+							<th width="20">商品价格</th>
+							<th width="15">图片</th>
+							<th width="20">商品编码</th>
+							<th width="20">商品库存</th>
+							<th width="20">是否上架</th>
+							<th width="20">货品</th>
+							<th width="20">属性管理操作</th>
+							
+							<th width="30">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
+			</div>
+		</article>
+	</div>
+	<div class="text-c">
+		<span id="demo">&nbsp;&nbsp;</span>
+	</div>
+<div id="modal-demo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content radius">
+			<div class="modal-header">
+				<h3 class="modal-title">对话框标题</h3>
+				<a class="close" data-dismiss="modal" aria-hidden="true" href="javascript:void();">×</a>
+			</div>
+			<div class="modal-body">
+				<input type="text" value="" id="up_goods_id" hidden="">
+				<br>
+				商品名称：<input type="text" value="" id="up_goods_name">
+				<br>
+				品牌名称：
+				<select id="up_brand_id">
+					<option></option>
+				</select>
+				<br>
+				分类：
+				<select id="up_cat_id">
+					<option></option>
+				</select>
+				<br>
+				商品价格：<input type="text" value="" id="up_goods_price">
+				<br>
+				库存：<input type="text" value="" id="up_goods_number">
+				<br>
+				商品编码：<input type="text" value="" id="up_goods_sn">
+				<br>
+				已售出：<input type="text" value="" id="up_goods_sold">
+				<br>
+				是否上架：<input type="text" value="" id="up_is_show">
+				<br>
+				<span id="up_span"></span>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" onclick="up_action()">确定</button>
+				<button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="footer"}
+<script>			
+
+	function show() {
+		$.ajax({
+			url:'{:url("goods/show")}',
+			success:function(res){
+				if(res.status=='ok'){
+					var data=res.data
+					var tr=''
+				for (var i = 0; i <data.length; i++){
+					tr=tr+"<tr><td><input  class='mycheckbox' type='checkbox'></td><td>"+data[i]['goods_id']+"</td><td>"+data[i]['goods_name']+"</td><td>"+data[i]['brand_name']+"</td><td>"+data[i]['cat_name']+"</td><td>"+data[i]['goods_price']+"</td><td><a href='{:url('goodsimg/goodsimgshow')}?id="+data[i]['goods_id']+"'>图片</a></td><td>"+data[i]['goods_sn']+"</td><td>"+data[i]['goods_number']+"</td><td>"+data[i]['is_show']+"</td><td><a href='{:url('goodslist/list')}?id="+data[i]['goods_id']+"'><i class='Hui-iconfont'>&#xe667;</i></a></td><td><a href='{:url('goodsattr/list')}?id="+data[i]['goods_id']+"'><i class='Hui-iconfont'>&#xe60c;</i></a></td><td class='f-14 product-brand-manage'><a style='text-decoration:none' onclick='modaldemo("+data[i]['goods_id']+")' title='编辑'><i class='Hui-iconfont'>&#xe6df;</i></a> <a style='text-decoration:none' class='ml-5'  onclick='del("+data[i].goods_id+")' title='删除' ><i class='Hui-iconfont'>&#xe6e2;</i></a></td></tr>"	;			
+				}
+				$('.table tbody').html(tr)
+			}else{
+				alert('没有权限')
+			}
+			}
+		})
+	}
+	show();
+
+	function del(goods_id){
+		$.ajax({
+			url:"{:url('goods/del')}",
+			type:'post',
+			data:{
+				goods_id:goods_id,
+			},
+			success:function(res){
+				if(res=='ok'){
+					alert("删除成功")
+					show()
+				}
+			}
+		})
+	}
+
+	function modaldemo(id){
+		$.ajax({
+			url:"{:url('goods/updateshow')}",
+			data:{
+				id:id,
+			},
+			type:'post',
+			success:function(res){
+				var goods=res.data
+				var brand=res.data2		
+				var category=res.data3
+				brand_option=''
+				re_brand_option=''
+				category_option=''
+				re_category_option=''
+				for (var i = 0; i < brand.length; i++) {
+					var brand_id=brand[i].brand_id
+					var brand_name=brand[i].brand_name
+					if(goods[0].brand_id==brand_id){
+						re_brand_option="<option value='"+brand_id+"' selected>"+brand_name+"</option>"
+					}else{
+						brand_option=brand_option+"<option value='"+brand_id+"'>"+brand_name+"</option>"
+					}
+				}
+				b_option=re_brand_option+brand_option
+				for (var i = 0; i < category.length; i++) {
+					var cat_id=category[i].cat_id
+					var	cat_name=category[i].cat_name
+					if (goods[0].cat_id==cat_id) {
+						re_category_option="<option value='"+cat_id+"' selected>"+cat_name+" </option>"
+					}else{
+						category_option=category_option+"<option value='"+cat_id+"'>"+cat_name+"</option>"
+					}
+				}
+				c_option=re_category_option+category_option
+				$('#up_brand_id').html(b_option)
+				$('#up_cat_id').html(c_option)
+				$('#up_goods_id').val(goods[0].goods_id)
+				$('#up_goods_name').val(goods[0].goods_name)
+				$('#up_goods_price').val(goods[0].goods_price)
+				$('#up_goods_number').val(goods[0].goods_number)
+				$('#up_goods_sn').val(goods[0].goods_sn)
+				$('#up_goods_sold').val(goods[0].goods_sold)
+				$('#up_is_show').val(goods[0].is_show)
+				$('#modal-demo').modal("show")
+				}
+			})
+		}
+		function up_action(){
+			var goods_id=$('#up_goods_id').val()
+			var goods_name=$('#up_goods_name').val()
+			var goods_price=$('#up_goods_price').val()
+			var goods_number=$('#up_goods_number').val()
+			var goods_sn=$('#up_goods_sn').val()
+			var goods_sold=$('#up_goods_sold').val()
+			var is_show=$('#up_is_show').val()
+			var brand_id=$('#up_brand_id').val()
+			var cat_id=$('#up_cat_id').val()
+			$.ajax({
+				url:"{:url('goods/update_action')}",
+				type:'post',
+				data:{
+					goods_id:goods_id,
+					goods_name:goods_name,
+					goods_price:goods_price,
+					goods_number:goods_number,
+					goods_sn:goods_sn,
+					goods_sold:goods_sold,
+					is_show:is_show,
+					brand_id:brand_id,
+					cat_id:cat_id,
+				},
+				dataType:'json',
+				success:function(res){
+					if(res.status=='ok'){
+						$('#modal-demo').modal('hide')
+						alert('修改成功')
+						show()
+					}
+					if (res.status=='error') {
+						$('#up_span').modal(res.data)
+					}
+				}
+			})
+
+		}
+
+
+
+
+
+</script>
+
+</body>
+</html> 

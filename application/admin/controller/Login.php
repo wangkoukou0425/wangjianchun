@@ -48,7 +48,7 @@ class Login extends Controller
 
      public function loginOut(){
         Session::clear();
-        $this->redirect('login/login');
+        $this->redirect('login/login'); 
     }
    // 
   
