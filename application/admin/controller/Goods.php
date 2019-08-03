@@ -3,6 +3,7 @@ namespace app\admin\controller;
 use Request;
 use Db;
 use gmars\rbac\Rbac;
+use Redis;
 
 class Goods extends Common
 {
@@ -13,9 +14,33 @@ class Goods extends Common
 
      public function show()
     { 
-      $arr=Db::query("select goods_id,goods_name,brand_name,goods_sn,goods_number,is_show,goods_sold,goods_price,add_time,cat_name from goods as g join brand as b on g.brand_id=b.brand_id join category as cat on cat.cat_id=g.cat_id");
-      $json=['code'=>0,'status'=>'ok','data'=>$arr];
-      return json($json);
+        $redis = new Redis();
+        $redis->connect('127.0.0.1',6379);
+        $aa=$redis->ZREVRANGE('z', 0, 3);//排序点击量前4个
+        $data=Request::post();
+        $s_name=$data['s_name'];
+     if (!empty($s_name)) {
+        $redis->Hsetnx('h',"$s_name",0);//哈希存值
+        $num=$redis->HincrBy('h',"$s_name",1);//哈希value值递增
+        $num1=$redis->Hget('h',"$s_name");//取value值
+        $redis->ZINCRBY("z","$num1","$s_name");
+     }
+        if (empty($s_name)) {
+            $arr=Db::query("select goods_id,goods_name,brand_name,goods_sn,goods_number,is_show,goods_sold,goods_price,add_time,cat_name from goods as g join brand as b on g.brand_id=b.brand_id join category as cat on cat.cat_id=g.cat_id limit 0,300");
+            
+        }elseif ($num1<10) {
+            $arr=Db::query("select goods_id,goods_name,brand_name,goods_sn,goods_number,is_show,goods_sold,goods_price,add_time,cat_name from goods as g join brand as b on g.brand_id=b.brand_id join category as cat on cat.cat_id=g.cat_id where goods_name like '%".$s_name."%'");
+        }elseif ($num1=10) {
+            $arr=Db::query("select goods_id,goods_name,brand_name,goods_sn,goods_number,is_show,goods_sold,goods_price,add_time,cat_name from goods as g join brand as b on g.brand_id=b.brand_id join category as cat on cat.cat_id=g.cat_id where goods_name like '%".$s_name."%'");
+            $arr=json_encode($arr);
+            $redis->Hset("h",$s_name,$arr);
+        }elseif ($num1>10) {
+            $arr=$redis->Hget("h",$s_name);
+            $arr=json_decode($arr);
+        }  
+      $json=['code'=>'0','status'=>'ok','data'=>$arr ,'aa'=>$aa];
+      echo json_encode($json);
+      
     }
 
      public function showCat()
