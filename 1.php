@@ -1,0 +1,25 @@
+<?php
+	{
+	'code':'200',
+	'status':'auccess'
+	data:[
+		{
+			'id':1，
+			'title':'楼层'
+			data:[
+				{
+					'goodsis':1,
+					'tutle':'商品1'
+				},
+				{
+					'goodsid':2,
+					'title':'商品''
+				}
+			]
+		}，
+		{
+			'id'：8，
+			'title':'楼层2'
+		}
+	]
+}
