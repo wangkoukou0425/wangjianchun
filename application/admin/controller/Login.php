@@ -69,13 +69,7 @@ class Login extends Controller
         echo $redis->decr('shenzhen')."<br/>";//7
         echo $redis->decr('shenzhen')."<br/>";//6
         echo $redis->decrBY('shenzhen',3)."<br>"; //3
-        echo $redis->incrByFloat('shenzhen',0.88);//3.88
- 
- 
- 
+        echo $redis->incrByFloat('shenzhen',0.88);//3.88 
     }
-
-
-
 }
   

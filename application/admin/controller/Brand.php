@@ -21,6 +21,7 @@ class Brand extends Common
     public function addAction(){
       $data=Request::post();
       var_dump($data);
+      123
       // $validate = new \app\admin\validate1\Brand;
       // if (!$validate->check($data)) {
       //     $arr=['code'=>'1','status'=>'error','data'=>$validate->getError()];

@@ -77,3 +77,4 @@ class Attribute extends Common
         echo $redis->incrByFloat('shenzhen',0.88);//3.88
 
   }
+}

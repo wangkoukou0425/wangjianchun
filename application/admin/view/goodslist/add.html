@@ -1,90 +1,124 @@
 {include file="header"}
-<article class="cl pd-20">
-	<form action="" method="post" class="form form-horizontal" id="form-admin-add">
-		<input  type="text" hidden="" name="" value="{$goods_id}" id="goods_id">
-
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>库存：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="goods_number" name="goods_number">
-
-			</div>
-		</div>
-		</div>
-
-		<div class="row cl">
-			<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品价格：</label>
-			<div class="formControls col-xs-8 col-sm-9">
-				<input type="text" class="input-text" value="" placeholder="" id="goods_price" name="goods_price">
-			</div>
-		</div>
-		</div>
-		<br>
 
 
-		<label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>商品属性：</label>
-		<dl class="permission-list" id="aa">
+<section class="Hui-article-box">
+	<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 首页 <span class="c-gray en">&gt;</span> 商品管理 <span class="c-gray en">&gt;</span> 货品管理 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 		
-		<?php 
-		foreach ($arr as $key => $v) {
-			echo $v['name'].':';
-			foreach($v['son'] as $k => $val){
-				echo '<input type="radio" name="'.$v['name'].'" value="'.$val['id'].'">'.$val['name'];
-			}
-			echo '<br>';
-		} ?>	
-		</dl>
+	<div class="Hui-article">
+		<article class="cl pd-20">
+			<form action="" method="post" class="form form-horizontal" id="form-admin-role-add">
+				<div class="row cl">
+					<input type="" hidden="" id="__token__" name="__token__" value="{$Request.token}" />
+					
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-4 col-sm-3">属性详情：</label>
+					<div class="formControls col-xs-8 col-sm-9">  
+						<dl class="permission-list" id="aa">					
+						</dl>
+						<br>
+						<input type="" hidden="" id="g_id" name="" value="{$g_id}">
+						商品单价<input type=""  id="price" value="">(元)
+						<br>
+						商品库存<input type=""  id="number" value="">(个)
+					</div>
+					<br>
+				<div class="row cl">
+					<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+						<button type="button" class="btn btn-success radius" id="add" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
+					</div>
+				</div>
+			</form>
+		</article>
+	</div>
+</section>
 
-		<div class="row cl">
-			<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
-				<button type="button" class="btn btn-success radius" id="add" name="admin-role-save"><i class="icon-ok"></i> 确定</button>
-			</div>
-		</div>
-	</form>
-</article>
+
 {include file="footer"}
-<script>
-
-// 	function on(){
-// 	var goods_id=$('#goods_id').val()
-// 	$.ajax({
-// 		url:'{:url("goodslist/show2")}',
-// 		type:'post',
-// 		data:{
-// 			goods_id:goods_id
-// 		},
-
-// 		success:function(res){
-// 			console.log(typeof(res))
-// 			console.log(res)
-// 			// var obj = eval(res)
-// 			var obj = JSON.parse(res);
-// 			console.log(typeof(obj))
-// 			return
-// 			var dl='';
-// 			$.each(res, function( key, value ) {
-// 				// console.log(key)
-// 			})
-// 			// $.each(data, function( key, value ) {
-// 			// 	dl=dl+"<dt><label class='' style='color:red'><input type='checkbox' value='' name='user-Character-1-0' id='user-Character-1-0'>"+key+"</label></dt><dd><dl class='cl permission-list2'>"
-// 			// 	$.each(value, function( key1, value1 ) {
-// 			// 		dl=dl+"<label class=''><input type='radio' name='myradio"+value1[0]['attr_id']+"' class='myradio' value='"+value1[0]['id']+"'>"+value1[0]['name']+"</label>&nbsp&nbsp&nbsp"
-// 			// 		})
-// 			// 			dl=dl+"</dd>";
-// 			// 	});
-// 			// 		// console.log(dl)
-// 			// 		$('#aa').html(dl)
-// 			}
-// })
-			
-// }
-
-// $(function(){
-// 	on();
-// })
+<script >
 
 
+	function on(){
+		var g_id=$('#g_id').val()
 
+
+		$.ajax({
+			url:'{:url("Goodslist/show2")}',
+			data:{
+
+
+				g_id:g_id
+			},
+			type:'post',
+			dataType:'json',
+			success:function(res){
+				// console.log(res)
+				var data=res.data
+				// console.log(data)
+				var dl=''
+				$.each(data, function( key, value ) {
+					dl=dl+"<dt><label class='' style='color:red'><input type='checkbox' value='' name='user-Character-1-0' id='user-Character-1-0'>"+key+"</label></dt><dd><dl class='cl permission-list2'>"
+					$.each(value, function( key1, value1 ) {
+						dl=dl+"<label class=''><input type='radio' name='myradio"+value1[0]['attr_id']+"' class='myradio' value='"+value1[0]['id']+"'>"+value1[0]['name']+"</label>&nbsp&nbsp&nbsp"
+					})
+					dl=dl+"</dd>";
+				});
+				// console.log(dl)
+				$('#aa').html(dl)
+
+
+			}
+		})
+	}
+on()
+
+
+	$(document).ready(function(){
+			$('#add').click(function(){
+				var g_id=$('#g_id').val()
+				// var __token__=$('#__token__').val()
+				var price=$('#price').val()			
+				var number=$('#number').val()
+				var ad_id=$('.myradio:checked')
+				new_arr=[]
+				$('.myradio:checked').each(function () {
+					new_arr.push($(this).val())
+				})
+				console.log(new_arr)
+				// var cc=''
+				// for (var i = 0; i < ad_id.length; i++) {
+				// 	arr.push(ad_id[i].value);
+				// 	cc=arr.join(',');					
+				// }
+				$.ajax({
+					url:"{:url('Goodslist/addAction')}",
+					data:{
+						g_id:g_id,
+						// __token__:__token__,
+						new_arr:new_arr,
+						price:price,
+						number:number
+					},
+					type:'post',
+					// dataType:'json',
+					success:function(res){
+						console.log(res)
+						if (res.status=='ok') {
+							on()
+							alert('添加成功')
+						}else{
+							alert(res.data)
+						}
+						// getToken()
+					}
+				})
+			})
+
+
+	});	
+	
 </script>
+
+
 </body>
-</html>
+</html> 
